@@ -8,24 +8,24 @@ namespace ArrayAndStrings
     {
         public void PrintResults()
         {
-            Console.WriteLine("1.1 String characters uniqueness task. Enter 2 string for check.");
+            Console.WriteLine("1.1 String characters uniqueness task.");
 
-            var uniqueStr = Console.ReadLine();
-            var notUniqueStr = Console.ReadLine();
+            var uniqueStr = "abcdf";
+            var notUniqueStr = "aedfdsuioajkl";
             Console.WriteLine();
 
             LoopStringCharactersUnique(uniqueStr);
             LoopStringCharactersUnique(notUniqueStr);
 
-            //HashSetStringCharactersUnique(uniqueStr);
-            //HashSetStringCharactersUnique(notUniqueStr);
+            HashSetStringCharactersUnique(uniqueStr);
+            HashSetStringCharactersUnique(notUniqueStr);
 
             Console.WriteLine("----------------------------------------------------------------------------");
 
 
-            Console.WriteLine("1.3 String duplicates. Enter string for the task.");
+            Console.WriteLine("1.3 String duplicates.");
 
-            var duplicateString = Console.ReadLine();
+            var duplicateString = "abcdaqcd"; // should display abcdq
             Console.WriteLine();
 
             RemoveDuplicates(duplicateString);
@@ -35,7 +35,26 @@ namespace ArrayAndStrings
 
         private void RemoveDuplicates(string str)
         {
-            
+            var array = str.ToCharArray();
+            for (var i = 0; i < array.Length; i++)
+            {
+                if (array[i] == '\0') continue;
+                for (var j = i + 1; j < array.Length; j++)
+                {
+                    if(array[j] == '\0') continue; 
+
+                    if (array[i] == array[j])
+                    {
+                        array[j] = '\0';
+                        for (var k = j; k < array.Length-1; k++)
+                        {
+                            var temp = array[k + 1];
+                            array[k + 1] = array[k];
+                            array[k] = temp;
+                        }
+                    }
+                }
+            }
         }
 
         private void LoopStringCharactersUnique(string str)
