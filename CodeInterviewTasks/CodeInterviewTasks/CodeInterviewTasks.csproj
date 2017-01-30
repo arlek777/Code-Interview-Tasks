@@ -54,10 +54,6 @@
       <Project>{128C0D5C-D355-41F6-AFCD-13F1CE1C5C39}</Project>
       <Name>ArrayAndStrings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{065C4F8F-AE37-4AB3-8B57-DA9FBD816F1D}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
