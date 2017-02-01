@@ -11,6 +11,14 @@ namespace Tasks
         private const string NotUniqueString = "abcdaghrh";
 
         [TestMethod]
+        public void ShouldReplaceSpaces()
+        {
+            string str = "this is a test";
+            var result = ReplaceSpaces(str);
+            Assert.AreEqual(result, "this%20is%20a%20test");
+        }
+
+        [TestMethod]
         public void StringShouldBeAnnagrams()
         {
             string firstAnagramString = "Muka".ToLowerInvariant();
@@ -153,6 +161,34 @@ namespace Tasks
             }
 
             return true;
+        }
+
+        private string ReplaceSpaces(string str)
+        {
+            int spaceCounter = 0;
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] == ' ') { spaceCounter += 2; }
+            }
+
+            int newStrI = 0;
+            char[] newStr = new char[str.Length + spaceCounter];
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] == ' ')
+                {
+                    newStr[newStrI++] = '%';
+                    newStr[newStrI++] = '2';
+                    newStr[newStrI++] = '0';
+                }
+                else
+                {
+                    newStr[newStrI++] = str[i];
+                }
+            }
+
+            return new string(newStr);
         }
 
         #endregion
