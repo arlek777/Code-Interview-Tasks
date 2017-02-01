@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tasks
@@ -8,13 +9,30 @@ namespace Tasks
     {
         private const string UniqueString = "abcdfg";
         private const string NotUniqueString = "abcdaghrh";
-        private const string DuplicatedString = "abcdacd";
 
+        [TestMethod]
+        public void StringShouldBeAnnagrams()
+        {
+            string firstAnagramString = "Muka".ToLowerInvariant();
+            string secondAnagramString = "Kuma".ToLowerInvariant();
+
+            Assert.IsTrue(IsAnagramm(firstAnagramString, secondAnagramString));
+        }
+
+        [TestMethod]
+        public void StringShouldNOTBeAnnagrams()
+        {
+            string firstAnagramString = "Mika".ToLowerInvariant();
+            string secondAnagramString = "Kina".ToLowerInvariant();
+
+            Assert.IsFalse(IsAnagramm(firstAnagramString, secondAnagramString));
+        }
 
         [TestMethod]
         public void ShouldRemoveDuplicatedChars()
         {
-            string result = RemoveDuplicates(DuplicatedString);
+            string duplicatedString = "abcdacd";
+            string result = RemoveDuplicates(duplicatedString);
             Assert.IsTrue(IsStringUniqueHashSetImpl(result));
         }
 
@@ -68,7 +86,6 @@ namespace Tasks
             bool isUnique = true;
             for (int i = 0; i < str.Length; i++)
             {
-
                 for (int j = i + 1; j < str.Length; j++)
                 {
                     if (str[i] == str[j])
@@ -84,6 +101,7 @@ namespace Tasks
             return isUnique;
         }
 
+        // TODO work on it - isn't optimal decision
         private string RemoveDuplicates(string str)
         {
             var array = str.ToCharArray();
@@ -108,6 +126,33 @@ namespace Tasks
             }
 
             return array.ToString();
+        }
+
+        private bool IsAnagramm(string firstAnagramString, string secondAnagramString)
+        {
+            if (firstAnagramString.Length != secondAnagramString.Length)
+            {
+                return false;
+            }
+
+            int[] characters1 = new int[256];
+            int[] characters2 = new int[256];
+
+            for (int i = 0; i < firstAnagramString.Length; i++)
+            {
+                characters1[firstAnagramString[i]]++;
+                characters2[secondAnagramString[i]]++;
+            }
+
+            for (int i = 0; i < firstAnagramString.Length; i++)
+            {
+                if (characters2[firstAnagramString[i]] == 0 || characters1[firstAnagramString[i]] != characters2[firstAnagramString[i]])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         #endregion
