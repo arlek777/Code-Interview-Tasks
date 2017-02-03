@@ -21,16 +21,22 @@ namespace ChatBot
 
         private const string Delimeters = "?!.;";
 
-        private static readonly List<string> ResponseList = new List<string>(4);
+        private static readonly List<string> ResponseList = new List<string>(MaxResp);
 
         public static bool Quite = false;
 
         private const int MaxInput = 1;
+        private const int MaxResp = 4;
+
+        public static void Hello()
+        {
+            HandleEvent("SIGNON**");
+            SelectResponse();
+            Console.WriteLine(_response);
+        }
 
         public static void GetInput()
         {
-            Console.WriteLine("Enter: ");
-
             _prevInput = _input;
             _input = Console.ReadLine();
 
@@ -104,12 +110,12 @@ namespace ChatBot
         private static bool IsBotRepeat()
         {
             return (_prevResponse.Length > 0 &&
-                 _response == _prevResponse);
+                    _response == _prevResponse);
         }
 
         private static void SelectResponse()
         {
-            var rndIndex = new Random().Next(0, ResponseList.Count-1);
+            var rndIndex = new Random().Next(0, ResponseList.Count - 1);
             _response = ResponseList[rndIndex];
         }
 
@@ -133,8 +139,8 @@ namespace ChatBot
         private static bool IsSimilarInput()
         {
             return (_input.Length > 0 &&
-                 (_input.IndexOf(_prevInput) != -1 ||
-                 _prevInput.IndexOf(_input) != -1));
+                    (_input.IndexOf(_prevInput) != -1 ||
+                     _prevInput.IndexOf(_input) != -1));
         }
 
         private static bool IsNullInputRepetition()
@@ -145,9 +151,9 @@ namespace ChatBot
         private static bool IsUserRepeat()
         {
             return (_prevInput.Length > 0 &&
-                 ((_input == _prevInput) ||
-                 (_input.IndexOf(_prevInput) != -1) ||
-                 (_prevInput.IndexOf(_input) != -1)));
+                    ((_input == _prevInput) ||
+                     (_input.IndexOf(_prevInput) != -1) ||
+                     (_prevInput.IndexOf(_input) != -1)));
         }
 
         private static void HandleEvent(string str)
@@ -155,6 +161,9 @@ namespace ChatBot
             _prevEvent = _event;
             _event = str;
             _inputBackup = _input;
+
+            str = InsertSpace(str);
+
             _input = str;
 
             if (!IsSameEvent())
@@ -165,23 +174,55 @@ namespace ChatBot
             _input = _inputBackup;
         }
 
+        private static string InsertSpace(string str)
+        {
+            StringBuilder temp = new StringBuilder(str);
+            temp.Insert(0, ' ');
+            temp.Insert(temp.Length, ' ');
+            return temp.ToString();
+        }
+
+        // TODO 
+        // 1. Add several keywords
+        // 2.Add transpose for some sentences, like You to me, we to us etc.., 
+        // 3.Add word position concept, i.e. Who is? etc., 
+        // 4.Add context aware
+        // 5. Add ability to update db with new words
+        // 6. Add a beter repetition handling algorithm
+        // 7. Do a better DB location
         private static void FindMatch()
         {
             ResponseList.Clear();
+            List<int> indexList = new List<int>(MaxResp);
+
+            string bestKeyWord = "";
             for (int i = 0; i < DataSource.KnowledgeBase.Length; ++i)
             {
-                // there has been some improvements made in
-                // here in order to make the matching process
-                // a littlebit more flexible
-                if (_input.IndexOf(DataSource.KnowledgeBase[i][0], StringComparison.Ordinal) != -1)
+                string keyWord = DataSource.KnowledgeBase[i][0];
+                keyWord = InsertSpace(keyWord);
+
+                if (_input.IndexOf(keyWord, StringComparison.Ordinal) != -1)
                 {
-                    int responseSize = DataSource.KnowledgeBase[i].Length - MaxInput;
-                    for (int j = MaxInput; j <= responseSize; ++j)
+                    if (keyWord.Length > bestKeyWord.Length)
                     {
-                        ResponseList.Add(DataSource.KnowledgeBase[i][j]);
+                        bestKeyWord = keyWord;
+                        indexList.Clear();
+                        indexList.Add(i);
                     }
-                    break;
+                    else if (keyWord.Length == bestKeyWord.Length)
+                    {
+                        indexList.Add(i);
+                    }
                 }
+            }
+
+            if (!indexList.Any()) return;
+
+            var respIndex = indexList[0];
+            int responseSize = DataSource.KnowledgeBase[respIndex].Length - MaxInput;
+            for (int j = MaxInput; j <= responseSize; ++j)
+            {
+                ResponseList.Add(DataSource.KnowledgeBase[respIndex][j]);
             }
         }
 
@@ -199,6 +240,7 @@ namespace ChatBot
         {
             _input = RemovePunctuation(_input);
             _input = _input.ToUpperInvariant();
+            _input = InsertSpace(_input);
         }
 
         private static string RemovePunctuation(string str)

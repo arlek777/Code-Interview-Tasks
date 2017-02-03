@@ -11,6 +11,12 @@
             new string[] {"HELLO",
                 "HI THERE!"
             },
+            new string[] {"SIGNON**",
+                "HELLO USER, WHAT IS YOUR NAME?",
+                "HELLO USER, HOW ARE YOU DOING TODAY?",
+                "HI USER, WHAT CAN I DO FOR YOU?",
+                "YOU ARE NOW CHATING WITH CHATTERBOT6, ANYTHING YOU WANT TO DISCUSS?"
+            },
             new string[] {"HI", 
                 "HI THERE!",
                 "HOW ARE YOU?",
