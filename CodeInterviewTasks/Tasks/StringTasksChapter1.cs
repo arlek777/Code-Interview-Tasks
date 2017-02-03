@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,6 +10,33 @@ namespace Tasks
     {
         private const string UniqueString = "abcdfg";
         private const string NotUniqueString = "abcdaghrh";
+
+
+        [TestMethod]
+        public void BookSolutionDuplicates()
+        {
+            char[] str = new[] {'i', 's', 't', 't', 'a', 's'};
+            if (str == null) return;
+            int len = str.Length;
+            if (len < 2) return;
+
+            int tail = 1;
+
+            for (int i = 1; i < len; ++i)
+            {
+                int j;
+                for (j = 0; j < tail; ++j)
+                {
+                    if (str[i] == str[j]) break;
+                }
+                if (j == tail)
+                {
+                    str[tail] = str[i];
+                    ++tail;
+                }
+            }
+            str[tail] = '\0';
+        }
 
         [TestMethod]
         public void ShouldReplaceSpaces()
@@ -109,31 +137,52 @@ namespace Tasks
             return isUnique;
         }
 
-        // TODO work on it - isn't optimal decision
         private string RemoveDuplicates(string str)
         {
             var array = str.ToCharArray();
-            for (var i = 0; i < array.Length; i++)
-            {
-                if (array[i] == '\0') continue;
-                for (var j = i + 1; j < array.Length; j++)
-                {
-                    if (array[j] == '\0') continue;
+            int length = array.Length;
 
+            for (var i = 0; i < length; i++)
+            {
+                for (var j = i + 1; j < length; j++)
+                {
                     if (array[i] == array[j])
                     {
                         array[j] = '\0';
-                        for (var k = j; k < array.Length - 1; k++)
+                        for (var k = j; k < length - 1; k++)
                         {
                             var temp = array[k + 1];
                             array[k + 1] = array[k];
                             array[k] = temp;
                         }
+
+                        length--;
                     }
                 }
             }
 
-            return array.ToString();
+           Array.Resize(ref array, length);
+           return new string(array);
+        }
+
+        private string RemoveDuplicates2(string str)
+        {
+            var array = str.ToCharArray();
+            int newLength = array.Length;
+
+            for (var i = 0; i < array.Length; i++)
+            {
+                int j;
+                for (j = i + 1; j < array.Length; j++)
+                {
+                    if (array[i] == array[j]) break;
+                }
+
+
+            }
+
+            Array.Resize(ref array, newLength);
+            return new string(array);
         }
 
         private bool IsAnagramm(string firstAnagramString, string secondAnagramString)
