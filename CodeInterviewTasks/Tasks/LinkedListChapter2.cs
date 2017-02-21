@@ -18,14 +18,14 @@ namespace Tasks
 
     public class SingleLinkedList
     {
-        public Node FirstNode { get; private set; }
+        public Node Head { get; private set; }
         public uint Count { get; private set; }
 
         public void AddToTail(int data)
         {
-            if (FirstNode == null)
+            if (Head == null)
             {
-                FirstNode = new Node(data);
+                Head = new Node(data);
             }
             else
             {
@@ -36,29 +36,16 @@ namespace Tasks
             Count++;
         }
 
-        private Node FindLast()
-        {
-            var curr = FirstNode;
-            var prev = FirstNode;
-            while (curr != null)
-            {
-                prev = curr;
-                curr = curr.Next;
-            }
-
-            return prev;
-        }
-
         public void RemoveDuplicates()
         {
             if(Count == 0 || Count == 1) { return; }
-            if (Count == 2 && FirstNode.Data == FirstNode.Next.Data)
+            if (Count == 2 && Head.Data == Head.Next.Data)
             {
-                FirstNode.Next = null;
+                Head.Next = null;
                 return;
             }
 
-            var curr = FirstNode;
+            var curr = Head;
             while (curr != null)
             {
                 var innerNode = curr.Next;
@@ -68,13 +55,30 @@ namespace Tasks
                     if (curr.Data == innerNode.Data)
                     {
                         prevNode.Next = innerNode.Next;
+                        innerNode = innerNode.Next;
+                        Count--;
                     }
 
+                    if(innerNode == null)
+                        break;
+                    prevNode = innerNode;
                     innerNode = innerNode.Next;
+                 
                 }
-
                 curr = curr.Next;
             }
+        }
+
+        private Node FindLast()
+        {
+            var curr = Head;
+            while (curr != null)
+            {
+                if (curr.Next == null) return curr;
+                curr = curr.Next;
+            }
+
+            return curr;
         }
     }
 
@@ -87,7 +91,7 @@ namespace Tasks
         [TestMethod]
         public void RemoveDuplicatesWithoutBuffer()
         {
-            int[] arr = new[] { 2, 1, 5, 2, 4, 5 };
+            int[] arr = new[] { 3, 5, 3, 5, 3, 2, 4, 5 };
             foreach (var i in arr)
             {
                 _linkedList.AddToTail(i);
@@ -96,7 +100,7 @@ namespace Tasks
             _linkedList.RemoveDuplicates();
 
             HashSet<int> test = new HashSet<int>();
-            var node = _linkedList.FirstNode;
+            var node = _linkedList.Head;
             while (node != null)
             {
                 if(test.Contains(node.Data)) { Assert.Fail("Duplicated linked list"); }
