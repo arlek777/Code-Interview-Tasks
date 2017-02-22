@@ -46,7 +46,7 @@ namespace Tasks
             }
 
             var curr = Head;
-            while (curr != null)// TODO next to null
+            while (curr != null)
             {
                 var innerNode = curr.Next;
                 var prevNode = curr;
@@ -68,13 +68,20 @@ namespace Tasks
             }
         }
 
-        public void RemoveTheMiddleNode(Node node)
+        public void RemoveTheMiddleNode(ref Node node)
         {
-            if (node?.Next == null)
-                return;
+            if (node == null) return;
 
-            node.Data = node.Next.Data;
-            node.Next = node.Next.Next;
+            if (node.Next == null)
+            {
+                node.Data = 0;
+                node = null //todo think if next null
+            }
+            else
+            {
+                node.Data = node.Next.Data;
+                node.Next = node.Next.Next;
+            }
         }
 
         public Node FindNode(int data)
@@ -149,10 +156,31 @@ namespace Tasks
 
         [TestMethod]
         public void RemoveNodeInTheMiddle()
-        {//TODO think if it's the last node
-            _linkedList.RemoveTheMiddleNode(_linkedList.FindNode(4));
+        {
+            var node = _linkedList.FindNode(4);
+
+            _linkedList.RemoveTheMiddleNode(ref node);
             var result = _linkedList.ToList();
             var test = new[] {2, 3, 3, 2};
+
+            for (int i = 0; i < test.Length; i++)
+            {
+                if (test[i] != result[i])
+                {
+                    Assert.Fail("Not removed from the middle.");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void RemoveNodeInTheMiddleWithoutNext()
+        {
+            _linkedList.RemoveDuplicates();
+            var node = _linkedList.FindNode(4);
+
+            _linkedList.RemoveTheMiddleNode(ref node);
+            var result = _linkedList.ToList();
+            var test = new[] { 2, 3 };
 
             for (int i = 0; i < test.Length; i++)
             {
