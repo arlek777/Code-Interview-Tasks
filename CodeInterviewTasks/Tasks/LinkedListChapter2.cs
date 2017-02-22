@@ -7,7 +7,7 @@ namespace Tasks
 {
     public class Node
     {
-        public int Data { get; private set; }
+        public int Data { get; set; }
         public Node Next { get; set; }
 
         public Node(int d)
@@ -46,11 +46,11 @@ namespace Tasks
             }
 
             var curr = Head;
-            while (curr != null)
+            while (curr != null)// TODO next to null
             {
                 var innerNode = curr.Next;
                 var prevNode = curr;
-                while (innerNode != null)
+                while (innerNode != null) 
                 {
                     if (curr.Data == innerNode.Data)
                     {
@@ -63,18 +63,51 @@ namespace Tasks
                         break;
                     prevNode = innerNode;
                     innerNode = innerNode.Next;
-                 
                 }
                 curr = curr.Next;
             }
         }
 
-        private Node FindLast()
+        public void RemoveTheMiddleNode(Node node)
         {
+            if (node?.Next == null)
+                return;
+
+            node.Data = node.Next.Data;
+            node.Next = node.Next.Next;
+        }
+
+        public Node FindNode(int data)
+        {
+            return FindNode(Head, data);
+        }
+
+        public List<int> ToList()
+        {
+            List<int> list = new List<int>();
             var curr = Head;
             while (curr != null)
             {
-                if (curr.Next == null) return curr;
+                list.Add(curr.Data);
+                curr = curr.Next;
+            }
+
+            return list;
+        }
+
+        private Node FindNode(Node node, int data)
+        {
+            if (node == null) return null;
+            if (node.Data == data) return node;
+
+            return FindNode(node.Next, data);
+        }
+
+        private Node FindLast()
+        {
+            var curr = Head;
+            while (curr.Next != null)
+            {
                 curr = curr.Next;
             }
 
@@ -88,15 +121,19 @@ namespace Tasks
     {
         private readonly SingleLinkedList _linkedList = new SingleLinkedList();
 
-        [TestMethod]
-        public void RemoveDuplicatesWithoutBuffer()
+        [TestInitialize]
+        public void Init()
         {
-            int[] arr = new[] { 3, 5, 3, 5, 3, 2, 4, 5 };
+            int[] arr = new[] { 2,3,4,3,2 };
             foreach (var i in arr)
             {
                 _linkedList.AddToTail(i);
             }
+        }
 
+        [TestMethod]
+        public void RemoveDuplicatesWithoutBuffer()
+        {
             _linkedList.RemoveDuplicates();
 
             HashSet<int> test = new HashSet<int>();
@@ -107,6 +144,22 @@ namespace Tasks
                 test.Add(node.Data);
 
                 node = node.Next;
+            }
+        }
+
+        [TestMethod]
+        public void RemoveNodeInTheMiddle()
+        {//TODO think if it's the last node
+            _linkedList.RemoveTheMiddleNode(_linkedList.FindNode(4));
+            var result = _linkedList.ToList();
+            var test = new[] {2, 3, 3, 2};
+
+            for (int i = 0; i < test.Length; i++)
+            {
+                if (test[i] != result[i])
+                {
+                    Assert.Fail("Not removed from the middle.");
+                }
             }
         }
     }
