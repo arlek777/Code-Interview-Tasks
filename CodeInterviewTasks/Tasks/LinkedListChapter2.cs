@@ -18,7 +18,7 @@ namespace Tasks
 
     public class SingleLinkedList
     {
-        public Node Head { get; private set; }
+        public Node Head { get;  set; }
         public uint Count { get; private set; }
 
         public void AddToTail(int data)
@@ -49,6 +49,48 @@ namespace Tasks
             }
 
             Count++;
+        }
+
+        public SingleLinkedList Reverse()
+        {
+            if (Head == null || Head.Next == null) return this;
+
+            var first = Head;
+            var reversed = new SingleLinkedList();
+
+            if (this.Count == 2)
+            {
+                var second = first.Next;
+                first.Next = reversed.Head;
+                second.Next = first;
+                reversed.Head = second;
+                return reversed;
+            }
+
+            while (first != null)
+            {
+                Node next = first.Next;
+
+                first.Next = reversed.Head;
+                reversed.Head = first;
+
+                first = next;
+            }
+
+            return reversed;
+        }
+
+        public Node RecursiveReverse(Node node, Node reversed)
+        {
+            if (node == null) return reversed;
+
+            var next = node.Next;
+            node.Next = reversed;
+            reversed = node;
+
+            var result = RecursiveReverse(next, reversed);
+
+            return result;
         }
 
         public void RemoveDuplicates()
@@ -83,7 +125,7 @@ namespace Tasks
             }
         }
 
-        public void RemoveTheMiddleNode(ref Node node)
+        public void RemoveTheMiddleNode(Node node)
         {
             if (node == null) return;
 
@@ -244,7 +286,7 @@ namespace Tasks
 
             var node = linkedList.FindNode(4);
 
-            linkedList.RemoveTheMiddleNode(ref node);
+            linkedList.RemoveTheMiddleNode(node);
             var result = linkedList.ToList();
             var test = new[] {2, 3, 3, 2};
 
@@ -305,6 +347,68 @@ namespace Tasks
             for (int i = 0; i < result.Count; i++)
             {
                 if (result[i] != expected[i])
+                {
+                    Assert.Fail("Failed.");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void LoopReverseList()
+        {
+            var linkedList1 = new SingleLinkedList();
+            linkedList1.AddToTail(1);
+            linkedList1.AddToTail(2);
+            linkedList1.AddToTail(3);
+            linkedList1.AddToTail(4);
+
+            var reversed = linkedList1.Reverse().ToList();
+
+            int[] expected = new[] {4, 3, 2, 1};
+            for (int i = 0; i < expected.Length; i++)
+            {
+                if (reversed[i] != expected[i])
+                {
+                    Assert.Fail("Failed.");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void LoopReverseListWith2Elements()
+        {
+            var linkedList1 = new SingleLinkedList();
+            linkedList1.AddToTail(1);
+            linkedList1.AddToTail(2);
+
+            var reversed = linkedList1.Reverse().ToList();
+
+            int[] expected = new[] { 2, 1 };
+            for (int i = 0; i < expected.Length; i++)
+            {
+                if (reversed[i] != expected[i])
+                {
+                    Assert.Fail("Failed.");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void LoopReverseRecursive()
+        {
+            var linkedList1 = new SingleLinkedList();
+            linkedList1.AddToTail(1);
+            linkedList1.AddToTail(2);
+            linkedList1.AddToTail(3);
+
+            var reversed = linkedList1.RecursiveReverse(linkedList1.Head, null);
+
+            var reversedList = new SingleLinkedList {Head = reversed}.ToList();
+
+            int[] expected = new[] { 2, 1 };
+            for (int i = 0; i < expected.Length; i++)
+            {
+                if (reversedList[i] != expected[i])
                 {
                     Assert.Fail("Failed.");
                 }
