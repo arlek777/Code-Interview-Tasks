@@ -52,9 +52,20 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="StringTasksChapter1.cs" />
+    <Compile Include="DesignPatterns\IProductsService.cs" />
+    <Compile Include="DesignPatterns\Money.cs" />
+    <Compile Include="DesignPatterns\MoneyService.cs" />
+    <Compile Include="DesignPatterns\MoneyType.cs" />
+    <Compile Include="DesignPatterns\ProductContainer.cs" />
+    <Compile Include="DesignPatterns\ProductsService.cs" />
+    <Compile Include="DesignPatterns\VendingMachine.cs" />
+    <Compile Include="LinkedList\Node.cs" />
+    <Compile Include="LinkedList\SingleLinkedList.cs" />
+    <Compile Include="StringTasksTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LinkedListChapter2.cs" />
+    <Compile Include="LinkedList\LinkedListChapterTests.cs" />
+    <Compile Include="Sorting\SortingChapterTests.cs" />
+    <Compile Include="DesignPatterns\IMoneyService.cs" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

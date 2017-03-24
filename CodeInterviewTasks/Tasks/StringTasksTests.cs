@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Tasks
 {
     [TestClass]
-    public class StringTasksChapter1
+    public class StringTasksTests
     {
         private const string UniqueString = "abcdfg";
         private const string NotUniqueString = "abcdaghrh";
