@@ -134,7 +134,7 @@ namespace Tasks.DesignPatterns
             {
                 _productsService.ReturnProduct(ProductPosition, CurrentSum);
                 CurrentSum -= 10; // minus real product sum
-                base.VendingMachine.State = new ReturnProductState(base.VendingMachine, this, _moneyService, _productsService);
+                //base.VendingMachine.State = new ReturnProductState(base.VendingMachine, this, _moneyService, _productsService);
             }
             catch
             {
@@ -149,7 +149,7 @@ namespace Tasks.DesignPatterns
 
         public VendingMachine()
         {
-            State = new FreeState();
+            //State = new FreeState();
         }
 
         public void InsertMoney()
