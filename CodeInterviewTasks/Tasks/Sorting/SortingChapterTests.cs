@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tasks.Sorting
@@ -5,135 +7,114 @@ namespace Tasks.Sorting
     [TestClass]
     public class SortingChapterTests
     {
-        readonly int[] expected = { 10, 30, 40, 50, 70, 80, 90 };
+        #region Sorting implementations
+
+        readonly int[] _expected = {10, 30, 40, 50, 70, 80, 90};
 
         [TestMethod]
         public void ClassicQuickSort_Test()
         {
-            int[] arr = { 10, 80, 30, 90, 40, 50, 70 };
-            SortHelper.ClassicQuickSort(arr, 0, arr.Length-1);
+            int[] arr = {10, 80, 30, 90, 40, 50, 70};
+            SortHelper.ClassicQuickSort(arr, 0, arr.Length - 1);
 
             for (int i = 0; i < arr.Length; i++)
             {
-                if(arr[i] != expected[i]) Assert.Fail("Simple Quick Sort Failed.");
+                if (arr[i] != _expected[i]) Assert.Fail("Simple Quick Sort Failed.");
             }
         }
 
         [TestMethod]
         public void SelectionSort_Test()
         {
-            int[] arr = { 10, 80, 30, 90, 40, 50, 70 };
+            int[] arr = {10, 80, 30, 90, 40, 50, 70};
             SortHelper.SelectionSort(arr);
 
             for (int i = 0; i < arr.Length; i++)
             {
-                if (arr[i] != expected[i]) Assert.Fail("Selection Sort Failed.");
+                if (arr[i] != _expected[i]) Assert.Fail("Selection Sort Failed.");
             }
         }
 
         [TestMethod]
         public void InsertionSort_Test()
         {
-            int[] arr = { 10, 80, 30, 90, 40, 50, 70 };
+            int[] arr = {10, 80, 30, 90, 40, 50, 70};
             SortHelper.InsertionSort(arr);
 
             for (int i = 0; i < arr.Length; i++)
             {
-                if (arr[i] != expected[i]) Assert.Fail("Insertion Sort Failed.");
-            }
-        }
-    }
-
-    public static class SortHelper
-    {
-        /*  This function takes last element as pivot, places
-            the pivot element at its correct position in sorted
-            array, and places all smaller (smaller than pivot)
-            to left of pivot and all greater elements to right
-            of pivot. 
-            The worst case when array is sorted it's O(n^2).
-            The best case when a pivot is middle element and it's randomly sorted O(NlogN).
-            Possible improvements: 3 way quick sort, insertion sort on small parts of array. 
-        */
-
-        public static void ClassicQuickSort(int[] arr, int low, int high)
-        {
-            if (high > low)
-            {
-                int pi = Partition(arr, low, high);
-
-                ClassicQuickSort(arr, low, (pi - 1));
-                ClassicQuickSort(arr, (pi + 1), high);
+                if (arr[i] != _expected[i]) Assert.Fail("Insertion Sort Failed.");
             }
         }
 
-        /* The selection sort algorithm sorts an array by repeatedly 
-           finding the minimum element (considering ascending order) 
-           from unsorted part and putting it at the beginning.
-         */
-        public static void SelectionSort(int[] arr)
+        [TestMethod]
+        public void MergeSort_Test()
         {
+            int[] arr = { 10, 80, 30, 90, 40, 50, 70 };
+            SortHelper.MergeSort(arr, 0, arr.Length - 1);
+
             for (int i = 0; i < arr.Length; i++)
             {
-                var minI = i;
-                for (int j = i+1; j < arr.Length; j++)
-                {
-                    if (arr[j] < arr[minI])
-                    {
-                        minI = j;
-                    }
-                }
-
-                Swap(arr, i, minI);
+                if (arr[i] != _expected[i]) Assert.Fail("Merge Sort Failed.");
             }
         }
 
-        /*  Works good with almost sorted array,
-            small array that will be added to big sorted array.
-            The best case: O(n) - sorted array
-            The worst case: O(n^2) - unsorted array
-         */
-        public static void InsertionSort(int[] arr)
+        #endregion Sorting Implementations
+
+        #region Sorting Chapter Tasks
+
+        /// <summary>
+        /// This task can be solved by usual Merge 
+        /// from merge sort or by more sort version whish is used here.
+        /// </summary>
+        [TestMethod]
+        public void MergeTwoArrays_Test()
         {
-            for (int i = 1; i < arr.Length; i++)
+            int[] a = new int[6];
+            a[0] = 10;
+            a[1] = 20;
+            a[2] = 30;
+
+            int[] b =  { 5, 15, 35 };
+
+            int[] expected = {5, 10, 15, 20, 30, 35};
+
+            MergeTask(a, b, 3, 3);
+
+            for (int s = 0; s < a.Length; s++)
             {
-                int j;
-                var key = arr[i];
-                for (j = i-1; j >=0 && arr[j] > key; j--)
-                {
-                    arr[j + 1] = arr[j];
-                }
-
-                arr[j + 1] = key;
+                if (a[s] != expected[s]) Assert.Fail("Merge Two Arrays task failed.");
             }
         }
 
-        private static int Partition(int[] arr, int low, int high)
+        private void MergeTask(int[] a, int[] b, int aLen, int bLen)
         {
-             //TODO find problems
+            // we have 3 arrays, 1 - Left side a[0-aLen-1], 2 - Right side b[0-bLen-1], 3 - merge to a[aLen-1 - lastAIndex]
+            // aLen and bLen are actual count of elements and not Length property
 
-            int pivot = arr[high];
-            int smallestIndex = -1;
-            // traverse from start till the pivot
-            for (int i = 0; i < high - 1; i++)
+            int k = aLen + bLen - 1; // new top index afer array merge
+            int i = aLen - 1; // starting from the end of arrays
+            int j = bLen - 1;
+
+            while (i >=0 && j >= 0)
             {
-                if (pivot >= arr[i])
+                // since we go from top to bottom we take bigger to the end of array
+                if (a[i] > b[j])
                 {
-                    smallestIndex++;
-                    Swap(arr, smallestIndex, i);
+                    a[k--] = a[i--];
+                }
+                else
+                {
+                    a[k--] = b[j--];
                 }
             }
 
-            Swap(arr, smallestIndex+1, high);
-
-            return smallestIndex + 1;
+            while (j >= 0)
+            {
+                a[k--] = b[j--];
+            }
         }
 
-        private static void Swap(int[] arr, int i, int j)
-        {
-            var temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
-        }
+        #endregion Sorting Chapter Tasks
     }
 }

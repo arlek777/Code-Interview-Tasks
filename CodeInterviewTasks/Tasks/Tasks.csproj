@@ -53,6 +53,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CompositePattern\Composite.cs" />
+    <Compile Include="Sorting\SortHelper.cs" />
     <Compile Include="VendingMachine\IProductsService.cs" />
     <Compile Include="VendingMachine\Money.cs" />
     <Compile Include="VendingMachine\MoneyService.cs" />
