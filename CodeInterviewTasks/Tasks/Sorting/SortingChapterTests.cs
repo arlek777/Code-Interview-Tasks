@@ -1,9 +1,24 @@
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tasks.Sorting
 {
+    public class AnagrammComparator : IComparer<string>
+    {
+        public string SortChars(string s)
+        {
+            char[] content = s.ToCharArray();
+            Array.Sort(content);
+            return new string(content);
+        }
+
+        public int Compare(string x, string y)
+        {
+            return SortChars(x).CompareTo(SortChars(y));
+        }
+    }
+
     [TestClass]
     public class SortingChapterTests
     {
@@ -113,6 +128,62 @@ namespace Tasks.Sorting
             {
                 a[k--] = b[j--];
             }
+        }
+
+        [TestMethod]
+        public void SortStringsWithAnnagramsTest()
+        {
+            var arr = new[] {"янтарь", "лось", "араб", "соль", "импорт", "портим"};
+            var expected = new[] { "араб", "янтарь", "импорт", "портим", "лось", "соль" };
+            Array.Sort(arr, new AnagrammComparator());
+
+
+            for (int s = 0; s < arr.Length; s++)
+            {
+                if (arr[s] != expected[s]) Assert.Fail("SortStringsWithAnnagramsTest task failed.");
+            }
+        }
+
+        [TestMethod]
+        public void CustomSortStringsWithAnnagramsTest()
+        {
+            var arr = new[] { "янтарь", "лось", "араб", "соль", "импорт", "портим" };
+            var expected = new[] { "араб", "янтарь", "импорт", "портим", "лось", "соль" };
+
+            // todo sort with custom anagramm logic
+            for (int i = 0; i < arr.Length; i++)
+            {
+                var minI = i;
+                for (int j = i + 1; j < arr.Length; j++)
+                {
+                    if (arr[j].CompareTo(arr[minI]) < 0 || IsAnagramm(arr[j], arr[minI]))
+                    {
+                        minI = j;
+                    }
+                }
+
+                SortHelper.Swap(arr, i, minI);
+            }
+
+
+            for (int s = 0; s < arr.Length; s++)
+            {
+                if (arr[s] != expected[s]) Assert.Fail("CustomSortStringsWithAnnagramsTest task failed.");
+            }
+        }
+
+        private bool IsAnagramm(string firstAnagramString, string secondAnagramString)
+        {
+            char[] content = firstAnagramString.ToCharArray();
+            Array.Sort(content);
+            var first = new string(content);
+
+            content = secondAnagramString.ToCharArray();
+            Array.Sort(content);
+            var second = new string(content);
+
+            // sorted chars that equals each other
+            return first == second;
         }
 
         #endregion Sorting Chapter Tasks

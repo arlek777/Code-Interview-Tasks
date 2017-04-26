@@ -1,3 +1,5 @@
+using System;
+
 namespace Tasks.Sorting
 {
     public static class SortHelper
@@ -88,26 +90,28 @@ namespace Tasks.Sorting
             }
         }
 
-        public static void MergeSort(int[] arr, int l, int r)
+        public static void MergeSort<T>(T[] arr, int l, int r) where T : IComparable
         {
-            if (l >= r) return;
+            if (r > l)
+            {
 
-            int m = (l + r) / 2;
+                int m = (l + r) / 2;
 
-            MergeSort(arr, l, m);
-            MergeSort(arr, m+1, r);
+                MergeSort(arr, l, m);
+                MergeSort(arr, m + 1, r);
 
-            Merge(arr, l, m, r);
+                Merge(arr, l, m, r);
+            }
         }
 
-        public static void Merge(int[] arr, int l, int m, int r)
+        public static void Merge<T>(T[] arr, int l, int m, int r) where T: IComparable
         {
             int i, j;
             int lLen = m - l + 1;
             int rLen = r - m;
 
-            int[] L = new int[lLen];
-            int[] R = new int[rLen];
+            T[] L = new T[lLen];
+            T[] R = new T[rLen];
 
             for (i = 0; i < lLen; i++)
                 L[i] = arr[l + i];
@@ -121,7 +125,8 @@ namespace Tasks.Sorting
 
             while (i < lLen && j < rLen)
             {
-                if (L[i] <= R[j])
+                int res = L[i].CompareTo(R[j]);
+                if (res <= 0)
                 {
                     arr[k] = L[i];
                     i++;
@@ -165,6 +170,13 @@ namespace Tasks.Sorting
         }
 
         public static void Swap(int[] arr, int i, int j)
+        {
+            var temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+
+        public static void Swap(string[] arr, int i, int j)
         {
             var temp = arr[i];
             arr[i] = arr[j];
