@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tasks
 {
@@ -20,28 +21,28 @@ namespace Tasks
         [TestMethod]
         public void ClosestEnemy()
         {
-            int[,] matrix1 = new int[,]
-            {
-                { 0,0,0 },
-                { 1,0,0 },
-                { 2,0,0 }
-            };
+            //int[,] matrix1 = new int[,]
+            //{
+            //    { 0,0,0 },
+            //    { 1,0,0 },
+            //    { 2,0,0 }
+            //};
 
-            int[,] matrix2 = new int[,]
+            int[][] matrix1 = new int[][]
             {
-                { 0,0,0,0 },
-                { 2,0,1,0 },
-                { 0,0,0,0 },
-                { 2,0,0,2 }
+                new int[] { 0,0,0,0 },
+                new int[] { 1,0,0,0 },
+                new int[] { 0,0,0,2 },
+                new int[] { 0,0,0,2 }
             };
 
             var heroIndexR = -1;
             var heroIndexC = -1;
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < matrix1.Length; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < matrix1[i].Length; j++)
                 {
-                    if (matrix1[i, j] == 1)
+                    if (matrix1[i][j] == 1)
                     {
                         heroIndexR = i;
                         heroIndexC = j;
@@ -51,7 +52,30 @@ namespace Tasks
                 if (heroIndexR >= 0) break;
             }
 
+            var closest = 0;
+            for (int i = 0; i < matrix1.Length; i++)
+            {
+                for (int j = 0; j < matrix1[i].Length; j++)
+                {
+                    if (matrix1[i][j] == 2)
+                    {
+                        var rSteps = Math.Abs(heroIndexR - i);
+                        var cSteps = Math.Abs(heroIndexC - j);
+                        if (cSteps == matrix1[i].Length-1)
+                        {
+                            cSteps = 1;
+                        }
 
+                        var result = rSteps + cSteps;
+                        if (closest == 0 || result < closest)
+                        {
+                            closest = result;
+                        }
+                    }
+                }
+            }
+
+            Assert.AreEqual(2, closest);
         }
     }
 }
