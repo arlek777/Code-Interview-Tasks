@@ -1,11 +1,50 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tasks
 {
     [TestClass]
-    public class CoderByteTasksTests
+    public class CodeSitesTasksTests
     {
+        /// <summary>
+        /// There are several methods to solve it: with XOR, with Dictionary, with additional list or 2 for.
+        /// </summary>
+        [TestMethod]
+        public void SingleNumberWithXOR()
+        {
+            var a = 0;
+            int[] nums = new int[] { 4, 1, 2, 1, 2 };
+            for (int i = 0; i < nums.Length; i++)
+            {
+                a ^= nums[i];
+            }
+
+            Assert.AreEqual(4, a);
+        }
+
+        [TestMethod]
+        public void SingleNumberWithDictionary()
+        {
+            var dictionary = new Dictionary<int, int>();
+            int[] nums = new int[] { 4, 1, 2, 1, 2 };
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (dictionary.ContainsKey(nums[i]))
+                {
+                    dictionary.Remove(nums[i]);
+                }
+                else
+                {
+                    dictionary[nums[i]] = i;
+                }
+            }
+
+            var result = dictionary.ToList().LastOrDefault().Key;
+            Assert.AreEqual(4, result);
+        }
+
         [TestMethod]
         public void ShouldConvertTime()
         {
